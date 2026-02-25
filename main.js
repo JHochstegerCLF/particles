@@ -3,11 +3,13 @@ const ctx = canvas.getContext("2d");
 
 let game = new Game(canvas)
 console.log(game);
+let showGrid = false;
 
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawGrid(ctx);
     game.particles.forEach(particle => particle.update());
     game.attractors.forEach(attractor => attractor.update());
 }
@@ -48,6 +50,9 @@ document.getElementById('spawnParticlesButton').addEventListener('click', () => 
     console.log(particleCount)
     spawnRandomParticles(particleCount);
 })
+document.getElementById('showGrid').addEventListener('change', (e) => {
+    showGrid = e.target.checked;
+})
 
 animate();
 function spawnParticles () {
@@ -74,6 +79,29 @@ function spawnRandomParticles(count) {
     for (let i = 0; i < count; i++) {
         new Particle(game, Math.random() * canvas.width, Math.random() * canvas.height);
     }
+}
+
+function drawGrid(ctx) {
+    if (!showGrid) return;
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Subtle faint white
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    // Draw Vertical Lines
+    for (let x = 0; x <= canvas.width; x += game.cellSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+    }
+
+    // Draw Horizontal Lines
+    for (let y = 0; y <= canvas.height; y += game.cellSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+    }
+
+    ctx.stroke();
 }
 
 spawnParticles();
