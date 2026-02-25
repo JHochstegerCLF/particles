@@ -6,6 +6,27 @@ class Game {
         this.cellSize = 50;
         this.particles = [];
         this.attractors = [];
+        this.particleForce = 10;
+        this.attractorForce = 10;
+        this.wallForce = 20;
+        this.maxSpeed = 10;
+
+        document.getElementById('particleForce').addEventListener('input', (e) => {
+            this.particleForce = e.target.value;
+            document.getElementById('particleForceLabel').innerText = "Particle Force (" + this.particleForce + "): ";
+        })
+        document.getElementById('attractorForce').addEventListener('input', (e) => {
+            this.attractorForce = e.target.value;
+            document.getElementById('attractorForceLabel').innerHTML = "Attractor Force (" + this.attractorForce + "): ";
+        })
+        document.getElementById('wallForce').addEventListener('input', (e) => {
+            this.wallForce = e.target.value;
+            document.getElementById('wallForceLabel').innerHTML = "Wall Force (" + this.wallForce + "): ";
+        })
+        document.getElementById('maxSpeed').addEventListener('input', (e) => {
+            this.maxSpeed = e.target.value;
+            document.getElementById('maxSpeedLabel').innerHTML = "Max Speed (" + this.maxSpeed + "): ";
+        })
 
         this.rows = Math.floor(this.height / this.cellSize);
         this.cols = Math.floor(this.width / this.cellSize);

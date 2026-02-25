@@ -16,12 +16,37 @@ window.addEventListener('resize', game.resizeCanvas);
 game.resizeCanvas();
 
 window.addEventListener('click', (event) => {
+    if (event.target.id !== 'myCanvas') return;
     new Particle(game, event.x, event.y);
 })
 
 window.addEventListener('contextmenu', (event) => {
     event.preventDefault();
     new Attractor(game, event.x, event.y);
+})
+
+document.getElementById('clearAll').addEventListener('click', () => {
+    game.particles = [];
+    game.attractors = [];
+    game.grid = Array.from({length: game.cols * game.rows}, () => null);
+})
+
+document.getElementById('clearParticles').addEventListener('click', () => {
+    game.particles = [];
+    game.grid = Array.from({length: game.cols * game.rows}, () => null);
+    game.attractors.forEach(attractor => attractor.gridIndex = null);
+})
+
+document.getElementById('clearAttractors').addEventListener('click', () => {
+    game.attractors = [];
+    game.grid = Array.from({length: game.cols * game.rows}, () => null);
+    game.particles.forEach(particle => particle.gridIndex = null);
+})
+
+document.getElementById('spawnParticlesButton').addEventListener('click', () => {
+    const particleCount = document.getElementById('particleCount').value;
+    console.log(particleCount)
+    spawnRandomParticles(particleCount);
 })
 
 animate();

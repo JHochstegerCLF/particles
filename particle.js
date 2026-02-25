@@ -5,8 +5,6 @@ class Particle {
         this.x = x;
         this.y = y;
         this.radius = 2;
-        this.repulsion = 10;
-        this.maxSpeed = 10;
         this.vx = 0;
         this.vy = 0;
         this.gridIndex = null;
@@ -57,11 +55,12 @@ class Particle {
                             // so particles at opposite corners of the 3x3 grid don't push each other.
                             // e.g., if (squaredDistance > 0.1 && squaredDistance < this.game.cellSize * this.game.cellSize)
                             if (squaredDistance > 0.1) {
-                                const force = this.repulsion / squaredDistance;
                                 if (particlesInGrid instanceof Particle) {
+                                    const force = this.game.particleForce / squaredDistance;
                                     this.vx += dx * force;
                                     this.vy += dy * force;
                                 } else if (particlesInGrid instanceof Attractor) {
+                                    const force = this.game.attractorForce / squaredDistance;
                                     this.vx -= dx * force;
                                     this.vy -= dy * force;
                                 }
@@ -74,24 +73,22 @@ class Particle {
             }
         }
 
-        const wallRepulsion = this.repulsion * 2;
-
         const distLeft = Math.max(0.1, this.x);
-        this.vx += wallRepulsion / (distLeft * distLeft);
+        this.vx += this.game.wallForce / (distLeft * distLeft);
 
         const distRight = Math.max(0.1, canvas.width - this.x);
-        this.vx -= wallRepulsion / (distRight * distRight);
+        this.vx -= this.game.wallForce / (distRight * distRight);
 
         const distTop = Math.max(0.1, this.y);
-        this.vy += wallRepulsion / (distTop * distTop);
+        this.vy += this.game.wallForce / (distTop * distTop);
 
         const distBottom = Math.max(0.1, canvas.height - this.y);
-        this.vy -= wallRepulsion / (distBottom * distBottom);
+        this.vy -= this.game.wallForce / (distBottom * distBottom);
 
-        if (this.vx > this.maxSpeed) this.vx = this.maxSpeed;
-        if (this.vx < -this.maxSpeed) this.vx = -this.maxSpeed;
-        if (this.vy > this.maxSpeed) this.vy = this.maxSpeed;
-        if (this.vy < -this.maxSpeed) this.vy = -this.maxSpeed;
+        if (this.vx > this.game.maxSpeed) this.vx = this.game.maxSpeed;
+        if (this.vx < -this.game.maxSpeed) this.vx = -this.game.maxSpeed;
+        if (this.vy > this.game.maxSpeed) this.vy = this.game.maxSpeed;
+        if (this.vy < -this.game.maxSpeed) this.vy = -this.game.maxSpeed;
 
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
