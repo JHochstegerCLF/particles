@@ -12,6 +12,9 @@ function animate() {
     drawGrid(ctx);
     game.particles.forEach(particle => particle.update());
     game.attractors.forEach(attractor => attractor.update());
+
+    document.getElementById('particleCount').innerText = 'Particles: ' + game.particles.length;
+    document.getElementById('attractorCount').innerText = 'Attractors: ' + game.attractors.length;
 }
 
 window.addEventListener('resize', game.resizeCanvas);
@@ -46,7 +49,7 @@ document.getElementById('clearAttractors').addEventListener('click', () => {
 })
 
 document.getElementById('spawnParticlesButton').addEventListener('click', () => {
-    const particleCount = document.getElementById('particleCount').value;
+    const particleCount = document.getElementById('particleAddCount').value;
     console.log(particleCount)
     spawnRandomParticles(particleCount);
 })
