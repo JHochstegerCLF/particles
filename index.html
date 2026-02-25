@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-US" style="height=100%">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    /* Remove default margins and prevent scrolling */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; 
+    }
+
+    /* Make canvas a block to remove the default inline gap at the bottom */
+    canvas {
+      display: block; 
+    }
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    canvas {
+      background: #000;
+      display: block;
+      margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body style="height=100%">
+    <canvas id="myCanvas" style="width=100%; height: 100%"></canvas>
+
+    <script type="text/javascript" src="./game.js"></script>
+    <script type="text/javascript" src="./particle.js"></script>
+    <script type="text/javascript" src="./attractor.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+  </body>
+</html>
