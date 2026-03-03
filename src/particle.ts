@@ -1,18 +1,18 @@
-class Particle {
+import Attractor from './attractor.js';
+import Game from "./game.js";
+import { AbstractParticle } from "./AbstractParticle.js";
 
-    constructor(game, x, y) {
-        this.game = game;
-        this.x = x;
-        this.y = y;
+export default class Particle extends AbstractParticle {
+    vx: number;
+    vy: number;
+
+    constructor(game: Game, x: number, y: number) {
+        super(game, x, y);
         this.radius = 2;
         this.vx = 0;
         this.vy = 0;
-        this.gridIndex = null;
 
         this.game.particles.push(this);
-
-        this.prev = null;
-        this.next = null;
     }
 
     update() {
@@ -35,7 +35,6 @@ class Particle {
                 const checkRow = myRow + j;
 
                 // SAFETY CHECK: Make sure this neighbor cell actually exists on the screen!
-                // If we are on the left edge (myCol = 0), checkCol - 1 would be -1, which breaks the array.
                 if (checkCol >= 0 && checkCol < this.game.cols && checkRow >= 0 && checkRow < this.game.rows) {
 
                     // Calculate the exact 1D index for this specific neighbor cell
@@ -51,9 +50,6 @@ class Particle {
                             const dy = this.y - particlesInGrid.y;
                             const squaredDistance = (dx * dx) + (dy * dy);
 
-                            // You might want to add a max distance check here too,
-                            // so particles at opposite corners of the 3x3 grid don't push each other.
-                            // e.g., if (squaredDistance > 0.1 && squaredDistance < this.game.cellSize * this.game.cellSize)
                             if (squaredDistance > 0.1) {
                                 if (particlesInGrid instanceof Particle) {
                                     const force = this.game.particleForce / squaredDistance;
@@ -76,13 +72,13 @@ class Particle {
         const distLeft = Math.max(0.1, this.x);
         this.vx += this.game.wallForce / (distLeft * distLeft);
 
-        const distRight = Math.max(0.1, canvas.width - this.x);
+        const distRight = Math.max(0.1, this.game.canvas.width - this.x);
         this.vx -= this.game.wallForce / (distRight * distRight);
 
         const distTop = Math.max(0.1, this.y);
         this.vy += this.game.wallForce / (distTop * distTop);
 
-        const distBottom = Math.max(0.1, canvas.height - this.y);
+        const distBottom = Math.max(0.1, this.game.canvas.height - this.y);
         this.vy -= this.game.wallForce / (distBottom * distBottom);
 
         if (this.vx > this.game.maxSpeed) this.vx = this.game.maxSpeed;
@@ -90,22 +86,10 @@ class Particle {
         if (this.vy > this.game.maxSpeed) this.vy = this.game.maxSpeed;
         if (this.vy < -this.game.maxSpeed) this.vy = -this.game.maxSpeed;
 
+        const ctx = this.game.ctx;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#fff';
         ctx.fill();
-    }
-
-    getGridIndex() {
-        let col = Math.floor(this.x / game.cellSize);
-        let row = Math.floor(this.y / game.cellSize);
-
-        // Keep the column and row safely inside the grid boundaries
-        if (col < 0) col = 0;
-        if (col >= game.cols) col = game.cols - 1;
-        if (row < 0) row = 0;
-        if (row >= game.rows) row = game.rows - 1;
-
-        return (row * game.cols) + col;
     }
 }

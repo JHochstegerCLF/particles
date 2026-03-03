@@ -1,5 +1,9 @@
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
+import Game from './game.js';
+import Particle from './particle.js';
+import Attractor from './attractor.js';
+
+const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
+const ctx = canvas.getContext("2d")!;
 
 let game = new Game(canvas)
 console.log(game);
@@ -13,51 +17,50 @@ function animate() {
     game.particles.forEach(particle => particle.update());
     game.attractors.forEach(attractor => attractor.update());
 
-    document.getElementById('particleCount').innerText = 'Particles: ' + game.particles.length;
-    document.getElementById('attractorCount').innerText = 'Attractors: ' + game.attractors.length;
+    document.getElementById('particleCount')!.innerText = 'Particles: ' + game.particles.length;
+    document.getElementById('attractorCount')!.innerText = 'Attractors: ' + game.attractors.length;
 }
 
-window.addEventListener('resize', game.resizeCanvas);
+window.addEventListener('resize', () => game.resizeCanvas());
 game.resizeCanvas();
 
-window.addEventListener('click', (event) => {
-    if (event.target.id !== 'myCanvas') return;
-    new Particle(game, event.x, event.y);
+window.addEventListener('click', (event: MouseEvent) => {
+    if ((event.target as HTMLElement).id !== 'myCanvas') return;
+    new Particle(game, event.clientX, event.clientY);
 })
 
-window.addEventListener('contextmenu', (event) => {
+window.addEventListener('contextmenu', (event: MouseEvent) => {
     event.preventDefault();
-    new Attractor(game, event.x, event.y);
+    new Attractor(game, event.clientX, event.clientY);
 })
 
-document.getElementById('clearAll').addEventListener('click', () => {
+document.getElementById('clearAll')!.addEventListener('click', () => {
     game.particles = [];
     game.attractors = [];
     game.grid = Array.from({length: game.cols * game.rows}, () => null);
 })
 
-document.getElementById('clearParticles').addEventListener('click', () => {
+document.getElementById('clearParticles')!.addEventListener('click', () => {
     game.particles = [];
     game.grid = Array.from({length: game.cols * game.rows}, () => null);
     game.attractors.forEach(attractor => attractor.gridIndex = null);
 })
 
-document.getElementById('clearAttractors').addEventListener('click', () => {
+document.getElementById('clearAttractors')!.addEventListener('click', () => {
     game.attractors = [];
     game.grid = Array.from({length: game.cols * game.rows}, () => null);
     game.particles.forEach(particle => particle.gridIndex = null);
 })
 
-document.getElementById('spawnParticlesButton').addEventListener('click', () => {
-    const particleCount = document.getElementById('particleAddCount').value;
+document.getElementById('spawnParticlesButton')!.addEventListener('click', () => {
+    const particleCount = parseInt((document.getElementById('particleAddCount') as HTMLInputElement).value);
     console.log(particleCount)
     spawnRandomParticles(particleCount);
 })
-document.getElementById('showGrid').addEventListener('change', (e) => {
-    showGrid = e.target.checked;
+document.getElementById('showGrid')!.addEventListener('change', (e) => {
+    showGrid = (e.target as HTMLInputElement).checked;
 })
 
-animate();
 function spawnParticles () {
     const totalRows = 10;
     const totalCols = 10;
@@ -78,13 +81,13 @@ function spawnParticles () {
     }
 }
 
-function spawnRandomParticles(count) {
+function spawnRandomParticles(count: number) {
     for (let i = 0; i < count; i++) {
         new Particle(game, Math.random() * canvas.width, Math.random() * canvas.height);
     }
 }
 
-function drawGrid(ctx) {
+function drawGrid(ctx: CanvasRenderingContext2D) {
     if (!showGrid) return;
 
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Subtle faint white
@@ -108,3 +111,4 @@ function drawGrid(ctx) {
 }
 
 spawnParticles();
+animate();
